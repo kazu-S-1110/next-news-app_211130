@@ -1,30 +1,16 @@
-import Head from 'next/head';
-import MainLayout from '../layouts';
+import { VFC } from 'react';
+import { Header } from '../components/header';
 import styles from '../styles/Home.module.scss';
 
-export default function Home(props) {
-  console.log(props.topArticles);
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function MainLayout({ children }): JSX.Element {
   return (
-    <MainLayout>
-      <Head>
-        <title>Simple News</title>
-      </Head>
-    </MainLayout>
+    <>
+      <Header />
+      <main className={styles.main}>{children}</main>
+    </>
   );
 }
-
-export const getStaticProps = async () => {
-  const pageSize = 10;
-  const topRes = await fetch(
-    `https://newsapi.org/v2/top-headlines?country=jp&pageSize=${pageSize}&apiKey=cea0809cd6484229bf2a490cde7f090b`
-  );
-  const topJson = await topRes.json();
-  const topArticles = topJson?.articles;
-
-  return {
-    props: {
-      topArticles,
-    },
-    revalidate: 60 * 10,
-  };
-};
