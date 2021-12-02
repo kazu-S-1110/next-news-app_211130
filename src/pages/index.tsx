@@ -4,6 +4,7 @@ import styles from '../styles/Home.module.scss';
 import Article from '../components/article';
 import Nav from '../components/nav';
 import WeatherNews from '../components/weather-news';
+import PickupArticle from '../components/pickup-article';
 
 const Home = (props) => {
   return (
@@ -24,6 +25,7 @@ const Home = (props) => {
         </div>
         <div className={styles.aside}>
           <WeatherNews weatherNews={props.weatherNews} />
+          <PickupArticle articles={props.pickupArticles} />
         </div>
       </div>
     </MainLayout>
@@ -49,10 +51,21 @@ export const getStaticProps = async () => {
   );
   const weatherJson = await weatherRes.json();
   const weatherNews = weatherJson;
+
+  const keyword = 'software';
+  const sortBy = 'popularity';
+  const pickupPageSize = 5;
+  const pickupRes = await fetch(
+    `https://newsapi.org/v2/everything?q=${keyword}&language=jp&sortBy=${sortBy}&pageSize=${pickupPageSize}&apiKey=${process.env.NEXT_PUBLIC_NEWS_APIKEY}`
+  );
+  const pickupJson = await pickupRes.json();
+  const pickupArticles = pickupJson?.articles;
+
   return {
     props: {
       topArticles,
       weatherNews,
+      pickupArticles,
     },
     revalidate: 60 * 10,
   };
